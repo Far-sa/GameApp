@@ -1,0 +1,36 @@
+//--> Entities
+--> User
+    ID
+    Phone number
+    Name
+    Avatar
+
+--> Game
+    ID
+    Category
+    Question List
+    Players
+    
+
+--> questions
+    ID
+    Title
+    Answer List
+    Correct Answer
+    Dificulity
+    Category
+
+//--> UseCases
+--> User 
+    register User by phone number
+    login user
+
+--> Game
+    game must has numbers of questions
+    game dificulity level --> "easy,medium,hard"
+    game winner --> the person who answer the question correctly
+    game blongines to which category
+
+
+
+# User Story
