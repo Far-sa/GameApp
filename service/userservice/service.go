@@ -11,7 +11,7 @@ import (
 type Repository interface {
 	UniquenePhonenumber(phoneNumer string) (bool, error)
 	RegisterUser(user entity.User) (entity.User, error)
-	//LoginUser(user entity.User) error
+	GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error)
 }
 
 type Service struct {
@@ -95,13 +95,25 @@ type LoginResponse struct {
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
+
+	//! TODO --> it is better to use SOLID principle- imporove functionality for each task separately
 	// check the phone number which is already exist
 	// get user by phone number
+	user, exist, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
+	if err != nil {
+		return LoginResponse{}, fmt.Errorf("unexpected error %w", err)
+	}
 
-	// compare user password wth login password
+	if !exist {
+		return LoginResponse{}, fmt.Errorf("record not found %w", err)
+	}
+
+	if user.Password != getMD5Hash(req.Password) {
+		return LoginResponse{}, fmt.Errorf("username/ password incorrect")
+	}
 
 	// create token
-	panic("un implemented")
+	return LoginResponse{}, nil
 }
 
 func getMD5Hash(test string) string {

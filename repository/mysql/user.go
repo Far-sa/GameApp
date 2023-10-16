@@ -25,9 +25,9 @@ func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 	user := entity.User{}
 	var createdAt []uint8
 
-	query := "select id,name,phone_number,created_at from users where phone_number=?"
+	query := "select id,name,password,phone_number,created_at from users where phone_number=?"
 	row := r.Db.QueryRow(query, phoneNumer)
-	err := row.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAt)
+	err := row.Scan(&user.ID, &user.Name, &user.Password, &user.PhoneNumber, &createdAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return true, nil
@@ -37,4 +37,22 @@ func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func (r MySQLDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error) {
+	user := entity.User{}
+	var createdAt []uint8
+
+	row := r.Db.QueryRow(`select * from users where phone_number=?`, phoneNumber)
+
+	err := row.Scan(&user.ID, &user.Name, &user.Password, &user.PhoneNumber, &createdAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return entity.User{}, false, nil
+		}
+
+		return entity.User{}, false, fmt.Errorf("can not scan query result :%w", err)
+	}
+
+	return user, true, nil
 }
