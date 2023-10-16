@@ -79,5 +79,5 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
-	panic("")
+	panic("un implemented")
 }
