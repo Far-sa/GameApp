@@ -15,7 +15,7 @@ type Service struct {
 	repo Repository
 }
 
-func NewUserService(repo Repository) Service {
+func New(repo Repository) Service {
 	return Service{repo: repo}
 }
 
@@ -43,9 +43,10 @@ type LoginResponse struct {
 func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 
 	//TODO --> verify phone number with verification code
+
 	//* validate phone number && uniqueness
 	if !phonenumber.IsValid(req.PhoneNumber) {
-		return RegisterResponse{}, fmt.Errorf("phonnumber is not valid")
+		return RegisterResponse{}, fmt.Errorf("phone number is not valid")
 	}
 
 	if isUnigue, err := s.repo.UniquenePhonenumber(req.PhoneNumber); err != nil || !isUnigue {
@@ -57,7 +58,7 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 		}
 	}
 
-	//* vakidate  name
+	//* validate  name
 	if len(req.Name) < 3 {
 		return RegisterResponse{}, fmt.Errorf("name should be at least 3 characters")
 	}

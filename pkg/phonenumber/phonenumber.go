@@ -1,6 +1,8 @@
 package phonenumber
 
-import "strconv"
+import (
+	"strconv"
+)
 
 func IsValid(phoneNumber string) bool {
 
@@ -8,6 +10,7 @@ func IsValid(phoneNumber string) bool {
 	if len(phoneNumber) != 11 {
 		return false
 	}
+
 	if phoneNumber[0:2] != "09" {
 		return false
 	}
