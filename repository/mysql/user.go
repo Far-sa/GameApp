@@ -8,8 +8,8 @@ import (
 
 func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
 
-	query := "insert into users(name,phone_number) values(?,?)"
-	res, err := r.Db.Exec(query, user.Name, user.PhoneNumber)
+	query := "insert into users(name,phone_number,password) values(?,?,?)"
+	res, err := r.Db.Exec(query, user.Name, user.PhoneNumber, user.Password)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("can not execute commnad %w", err)
 	}
