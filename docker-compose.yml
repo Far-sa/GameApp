@@ -6,9 +6,9 @@ services:
     container_name: mysql_gameapp
     restart: always
     ports:
-      - "3306:3306"
+      - ${DB_PORT}:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
