@@ -21,17 +21,17 @@ func New(repo Repository) Service {
 
 // * DTOs
 type RegisterRequest struct {
-	Name        string
-	PhoneNumber string
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phone_number"`
 }
 
 type RegisterResponse struct {
-	User entity.User
+	User entity.User `json:"user"`
 }
 
 type LoginRequest struct {
-	Name        string
-	PhoneNumber string
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phone_number"`
 }
 
 type LoginResponse struct {

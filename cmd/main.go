@@ -12,12 +12,14 @@ import (
 
 func main() {
 
-	http.HandleFunc("/health-check", healthCheckHandler)
-	http.HandleFunc("/users/register", userRegisterHandler)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/health-check", healthCheckHandler)
+	mux.HandleFunc("/users/register", userRegisterHandler)
 
 	log.Println("Server started on Port : 8000... ")
-	http.ListenAndServe(":8000", nil)
-
+	server := http.Server{Addr: ":8000", Handler: mux}
+	log.Fatal(server.ListenAndServe())
 }
 
 func userRegisterHandler(w http.ResponseWriter, r *http.Request) {
