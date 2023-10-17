@@ -15,12 +15,20 @@ type Repository interface {
 	GetUserById(userID uint64) (entity.User, error)
 }
 
+// ! interface composibility -->  helpul for test
+type AuthGeneratorService interface {
+	CreateAccessToken(user entity.User) (string, error)
+	RefreshAccessToken(user entity.User) (string, error)
+}
+
 type Service struct {
+	// use auth service as interface
+	auth AuthGeneratorService
 	repo Repository
 }
 
-func New(repo Repository) Service {
-	return Service{repo: repo}
+func New(authGenerator AuthGeneratorService, repo Repository) Service {
+	return Service{auth: authGenerator, repo: repo}
 }
 
 // * DTOs
@@ -93,6 +101,8 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	// token
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
@@ -113,8 +123,18 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 		return LoginResponse{}, fmt.Errorf("username/ password incorrect")
 	}
 
-	// create token
-	return LoginResponse{}, nil
+	// create tokens
+	accessToken, err := s.auth.CreateAccessToken(user)
+	if err != nil {
+		return LoginResponse{}, fmt.Errorf("unexpected error : %w", err)
+	}
+
+	refreshToken, err := s.auth.RefreshAccessToken(user)
+	if err != nil {
+		return LoginResponse{}, fmt.Errorf("unexpected error : %w", err)
+	}
+
+	return LoginResponse{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }
 
 // * DTOs
@@ -126,7 +146,6 @@ type ProfileResponse struct {
 }
 
 func (s Service) Profile(req ProfileRequest) (ProfileResponse, error) {
-	// getuserbyid
 	user, err := s.repo.GetUserById(uint64(req.UserID))
 	if err != nil {
 		//* TODO - use rich error
@@ -139,3 +158,5 @@ func getMD5Hash(test string) string {
 	hash := md5.Sum([]byte(test))
 	return hex.EncodeToString(hash[:])
 }
+
+// * custome claims
