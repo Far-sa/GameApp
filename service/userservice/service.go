@@ -12,6 +12,7 @@ type Repository interface {
 	UniquenePhonenumber(phoneNumer string) (bool, error)
 	RegisterUser(user entity.User) (entity.User, error)
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error)
+	GetUserById(userID uint64) (entity.User, error)
 }
 
 type Service struct {
@@ -114,6 +115,24 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 
 	// create token
 	return LoginResponse{}, nil
+}
+
+// * DTOs
+type ProfileRequest struct {
+	UserID uint `json:"user_id"`
+}
+type ProfileResponse struct {
+	Name string `json:"name"`
+}
+
+func (s Service) Profile(req ProfileRequest) (ProfileResponse, error) {
+	// getuserbyid
+	user, err := s.repo.GetUserById(uint64(req.UserID))
+	if err != nil {
+		//* TODO - use rich error
+		return ProfileResponse{}, fmt.Errorf("unexpected error: %w", err)
+	}
+	return ProfileResponse{Name: user.Name}, nil
 }
 
 func getMD5Hash(test string) string {

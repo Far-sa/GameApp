@@ -17,6 +17,7 @@ func main() {
 	mux.HandleFunc("/health-check", healthCheckHandler)
 	mux.HandleFunc("/users/register", userRegisterHandler)
 	mux.HandleFunc("/users/login", userLoginHandler)
+	mux.HandleFunc("/users/profile", userProfileHandler)
 
 	log.Println("Server started on Port : 8000... ")
 	server := http.Server{Addr: ":8000", Handler: mux}
@@ -88,6 +89,46 @@ func userLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte(`{"message":"user credentials is ok"}`))
+}
+
+func userProfileHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		fmt.Fprintf(w, `{"error":"invalid method"}`)
+	}
+
+	pReq := userservice.ProfileRequest{UserID: 0}
+
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
+
+		return
+	}
+
+	err = json.Unmarshal(data, &pReq)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
+
+		return
+	}
+	mysqlRepo := mysql.NewMYSQL()
+	userSvc := userservice.New(mysqlRepo)
+
+	resp, err := userSvc.Profile(pReq)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
+
+		return
+	}
+
+	data, err = json.Marshal(resp)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
+
+		return
+	}
+
+	w.Write(data)
 }
 
 func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
