@@ -35,6 +35,7 @@ func (s Server) Serve() {
 	e.GET("/health", s.healthCheck)
 	userGroup.POST("/login", s.userLogin)
 	userGroup.POST("/register", s.userRegister)
+	userGroup.GET("/profile", s.userProfile)
 
 	// Start server
 	log.Fatal(e.Start(fmt.Sprintf(":%d", s.config.HTTPServer.Port)))
