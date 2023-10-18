@@ -1,0 +1,13 @@
+####
+migrate create -ext sql -dir repository/mysql/migrations -seq create_users_table
+migrate -database YOUR_DATABASE_URL -path PATH_TO_YOUR_MIGRATIONS up
+migrate -database YOUR_DATABASE_URL -path PATH_TO_YOUR_MIGRATIONS down
+
+
+
+# migrate create -ext sql -dir db/migrations/ -seq init_schema
+ migrate -path db/migrations -database "postgres://root:password@localhost:5432/dbname?sslmode=disable" -verbose up
+
+
+
+sql-migrate

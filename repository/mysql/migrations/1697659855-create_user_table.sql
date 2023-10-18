@@ -1,5 +1,5 @@
 
-
+-- +migrate Up
 CREATE TABLE users (
     id int PRIMARY KEY AUTO_INCREMENT,
     name varchar(255) NOT NULL,
@@ -7,4 +7,5 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE users add COLUMN password varchar(255) NOT NULL;
+-- +migrate Down
+DROP TABLE users;
