@@ -38,8 +38,14 @@ type RegisterRequest struct {
 	Password    string `json:"password"`
 }
 
+type RegisterResponseUser struct {
+	ID          uint   `json:"id"`
+	PhoneNumber string `json:"phone_number"`
+	Name        string `json:"name"`
+}
+
 type RegisterResponse struct {
-	User entity.User `json:"user"`
+	User RegisterResponseUser `json:"user"`
 }
 
 func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
@@ -88,7 +94,20 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 	}
 
 	//* return Created User
-	return RegisterResponse{User: createdUser}, nil
+	return RegisterResponse{User: RegisterResponseUser{
+		ID:          createdUser.ID,
+		Name:        createdUser.Name,
+		PhoneNumber: createdUser.PhoneNumber,
+	}}, nil
+
+	//! anonymous struct
+	// resp2 := RegisterResponse{User: struct {
+	// 	ID          uint   `json:"id"`
+	// 	Name        string `json:"name"`
+	// 	PhoneNumber string `json:"phone_number`
+	// }{ID: createdUser.ID, Name: createdUser.Name, PhoneNumber: createdUser.PhoneNumber}}
+
+	//return resp2,nil
 }
 
 // * DTOs
