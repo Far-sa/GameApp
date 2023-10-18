@@ -10,19 +10,28 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type MySQLDB struct {
-	Db *sql.DB
+type Config struct {
+	Username string
+	Password string
+	Port     int
+	Host     string
+	DbName   string
 }
 
-func NewMYSQL() *MySQLDB {
+type MySQLDB struct {
+	config Config
+	db     *sql.DB
+}
+
+func NewMYSQL(config Config) *MySQLDB {
 
 	vErr := godotenv.Load(".env")
 	if vErr != nil {
 		log.Fatal("Error loading environment")
 	}
 
-	dsn := "gameapp:gameapp@tcp(localhost:3306)/gamedb"
-	db, err := sql.Open("mysql", dsn)
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.Username,
+		config.Password, config.Host, config.Port, config.DbName))
 	if err != nil {
 		panic(fmt.Errorf("can not open mysql database: %v", err))
 	}
@@ -34,5 +43,5 @@ func NewMYSQL() *MySQLDB {
 
 	//TODO migrate to mysql manually or ysung third party
 
-	return &MySQLDB{Db: db}
+	return &MySQLDB{config: config, db: db}
 }

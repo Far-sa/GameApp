@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-// ! interface pollution 
+// ! interface pollution
 // type AuthGenerator interface {
 // 	CreateAccessToken(user entity.User) (string, error)
 // 	RefreshAccessToken(user entity.User) (string, error)
@@ -18,38 +18,36 @@ import (
 // 	ParseToken(bearerToken string) (*Claims, error)
 // }
 
-type Service struct {
-	signKey               string
-	accessExpirationTime  time.Duration
-	refreshExpirationTime time.Duration
-	accessSubject         string
-	refreshSubject        string
+type Config struct {
+	SignKey               string
+	AccessExpirationTime  time.Duration
+	RefreshExpirationTime time.Duration
+	AccessSubject         string
+	RefreshSubject        string
 }
 
-func New(signKey, accessSubject, refreshSubject string, accessExpirationTime, refreshExpirationTime time.Duration) Service {
-	return Service{
-		signKey:               signKey,
-		accessExpirationTime:  accessExpirationTime,
-		refreshExpirationTime: refreshExpirationTime,
-		accessSubject:         accessSubject,
-		refreshSubject:        refreshSubject,
-	}
+type Service struct {
+	config Config
+}
+
+func New(config Config) Service {
+	return Service{config: config}
 }
 
 func (s Service) CreateAccessToken(user entity.User) (string, error) {
-	return s.createToken(user.ID, s.accessSubject, s.accessExpirationTime)
+	return s.createToken(user.ID, s.config.AccessSubject, s.config.AccessExpirationTime)
 }
 
 func (s Service) RefreshAccessToken(user entity.User) (string, error) {
-	return s.createToken(user.ID, s.refreshSubject, s.refreshExpirationTime)
+	return s.createToken(user.ID, s.config.RefreshSubject, s.config.RefreshExpirationTime)
 }
 
-func (s Service) ParseToken(bearerToken string) (*Claims, error) {
+func (s Service) VerifyToken(bearerToken string) (*Claims, error) {
 
 	tokenStr := strings.Replace(bearerToken, "Bearer ", "", 1)
 
 	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(s.signKey), nil
+		return []byte(s.config.SignKey), nil
 	})
 
 	if err != nil {
@@ -81,7 +79,7 @@ func (s Service) createToken(userID uint, subject string, expiresDuration time.D
 	}
 
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenStr, err := accessToken.SignedString([]byte(s.signKey))
+	tokenStr, err := accessToken.SignedString([]byte(s.config.SignKey))
 	if err != nil {
 		return "", err
 	}

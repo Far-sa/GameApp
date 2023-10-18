@@ -9,7 +9,7 @@ import (
 func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
 
 	query := "insert into users(name,phone_number,password) values(?,?,?)"
-	res, err := r.Db.Exec(query, user.Name, user.PhoneNumber, user.Password)
+	res, err := r.db.Exec(query, user.Name, user.PhoneNumber, user.Password)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("can not execute commnad %w", err)
 	}
@@ -24,7 +24,7 @@ func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
 func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 
 	query := "select id,name,password,phone_number,created_at from users where phone_number=?"
-	row := r.Db.QueryRow(query, phoneNumer)
+	row := r.db.QueryRow(query, phoneNumer)
 
 	_, err := scanUser(row)
 	if err != nil {
@@ -40,7 +40,7 @@ func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 
 func (r MySQLDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error) {
 
-	row := r.Db.QueryRow(`select * from users where phone_number=?`, phoneNumber)
+	row := r.db.QueryRow(`select * from users where phone_number=?`, phoneNumber)
 
 	user, err := scanUser(row)
 	if err != nil {
@@ -56,7 +56,7 @@ func (r MySQLDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, er
 
 func (r MySQLDB) GetUserById(userID uint64) (entity.User, error) {
 
-	row := r.Db.QueryRow(`select * from users where id=?`, userID)
+	row := r.db.QueryRow(`select * from users where id=?`, userID)
 
 	user, err := scanUser(row)
 	if err != nil {

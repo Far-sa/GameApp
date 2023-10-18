@@ -42,8 +42,6 @@ type RegisterResponse struct {
 	User entity.User `json:"user"`
 }
 
-//* ---------------
-
 func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 
 	//? TODO --> verify phone number with verification code
