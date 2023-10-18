@@ -46,40 +46,6 @@ func main() {
 
 }
 
-// func userProfileHandler(w http.ResponseWriter, r *http.Request) {
-// 	if r.Method != http.MethodGet {
-// 		fmt.Fprintf(w, `{"error":"invalid method"}`)
-// 	}
-
-// 	authSvc := authservice.New(JwtSignKey, AccessTokenSubject,
-// 		RefreshTokenSubject, AccessTokenExpirationDuration, RefreshTokenExpirationDuration)
-
-// 	authToken := r.Header.Get("Authorization")
-// 	claims, err := authSvc.VerifyToken(authToken)
-// 	if err != nil {
-// 		fmt.Fprintf(w, "token is invalid")
-// 	}
-
-// 	mysqlRepo := mysql.NewMYSQL()
-// 	userSvc := userservice.New(authSvc, mysqlRepo)
-
-// 	resp, err := userSvc.Profile(userservice.ProfileRequest{UserID: claims.UserID})
-// 	if err != nil {
-// 		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
-
-// 		return
-// 	}
-
-// 	data, err := json.Marshal(resp)
-// 	if err != nil {
-// 		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
-
-// 		return
-// 	}
-
-// 	w.Write(data)
-// }
-
 func setupServices(cfg config.Config) (authservice.Service, userservice.Service) {
 	authSrv := authservice.New(cfg.Auth)
 
