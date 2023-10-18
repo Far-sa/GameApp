@@ -46,51 +46,6 @@ func main() {
 
 }
 
-// func userLoginHandler(w http.ResponseWriter, r *http.Request) {
-// 	if r.Method != http.MethodPost {
-// 		fmt.Fprintf(w, `{"error":"invalid method"}`)
-// 	}
-
-// 	data, err := io.ReadAll(r.Body)
-// 	if err != nil {
-// 		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
-
-// 		return
-// 	}
-
-// 	var req userservice.LoginRequest
-// 	err = json.Unmarshal(data, &req)
-// 	if err != nil {
-// 		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
-
-// 		return
-// 	}
-
-// 	authSvc := authservice.New(JwtSignKey, AccessTokenSubject,
-// 		RefreshTokenSubject, AccessTokenExpirationDuration, RefreshTokenExpirationDuration)
-
-// 	mysqlRepo := mysql.NewMYSQL()
-// 	userSvc := userservice.New(authSvc, mysqlRepo)
-
-// 	resp, err := userSvc.Login(req)
-// 	if err != nil {
-// 		w.Header().Add("content-type", "application/json")
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
-
-// 		return
-// 	}
-
-// 	data, err = json.Marshal(resp)
-// 	if err != nil {
-// 		w.Write([]byte(fmt.Sprintf(`{"error": "%s"`, err.Error())))
-
-// 		return
-// 	}
-
-// 	w.Write(data)
-// }
-
 // func userProfileHandler(w http.ResponseWriter, r *http.Request) {
 // 	if r.Method != http.MethodGet {
 // 		fmt.Fprintf(w, `{"error":"invalid method"}`)

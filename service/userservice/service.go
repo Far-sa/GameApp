@@ -38,14 +38,14 @@ type RegisterRequest struct {
 	Password    string `json:"password"`
 }
 
-type RegisterResponseUser struct {
+type UserInfo struct {
 	ID          uint   `json:"id"`
 	PhoneNumber string `json:"phone_number"`
 	Name        string `json:"name"`
 }
 
 type RegisterResponse struct {
-	User RegisterResponseUser `json:"user"`
+	User UserInfo `json:"user"`
 }
 
 func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
@@ -94,7 +94,7 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 	}
 
 	//* return Created User
-	return RegisterResponse{User: RegisterResponseUser{
+	return RegisterResponse{User: UserInfo{
 		ID:          createdUser.ID,
 		Name:        createdUser.Name,
 		PhoneNumber: createdUser.PhoneNumber,
@@ -116,10 +116,15 @@ type LoginRequest struct {
 	Password    string `json:"password"`
 }
 
-type LoginResponse struct {
+type Tokens struct {
 	// token
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
+}
+
+type LoginResponse struct {
+	User   UserInfo `json:"user"`
+	Tokens Tokens   `json:"token"`
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
@@ -151,7 +156,10 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 		return LoginResponse{}, fmt.Errorf("unexpected error : %w", err)
 	}
 
-	return LoginResponse{AccessToken: accessToken, RefreshToken: refreshToken}, nil
+	return LoginResponse{
+		User:   UserInfo{ID: user.ID, Name: user.Name, PhoneNumber: user.PhoneNumber},
+		Tokens: Tokens{AccessToken: accessToken, RefreshToken: refreshToken},
+	}, nil
 }
 
 // * DTOs

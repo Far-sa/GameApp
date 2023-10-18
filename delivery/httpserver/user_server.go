@@ -22,6 +22,22 @@ func (s Server) userRegister(c echo.Context) error {
 	return c.JSON(http.StatusCreated, resp)
 }
 
+func (s Server) userLogin(c echo.Context) error {
+
+	var req userservice.LoginRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest)
+	}
+
+	resp, err := s.userSrv.Login(req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, resp)
+
+}
+
 func (s Server) healthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "everything is fine",
