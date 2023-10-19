@@ -38,6 +38,10 @@ func main() {
 		},
 	}
 
+	//* add migrator
+	// mgr := migrator.New(cfg.Mysql)
+	// mgr.Up()
+
 	authSrv, userSrv := setupServices(cfg)
 
 	server := httpserver.New(cfg, authSrv, userSrv)

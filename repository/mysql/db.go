@@ -30,7 +30,9 @@ func NewMYSQL(config Config) *MySQLDB {
 		log.Fatal("Error loading environment")
 	}
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.Username,
+	//* pardeTime=true changes the output type of DATE and DATETIME \
+	//* values to time.time instead of []byte / string
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", config.Username,
 		config.Password, config.Host, config.Port, config.DbName))
 	if err != nil {
 		panic(fmt.Errorf("can not open mysql database: %v", err))
