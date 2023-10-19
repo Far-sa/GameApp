@@ -11,3 +11,5 @@ migrate -database YOUR_DATABASE_URL -path PATH_TO_YOUR_MIGRATIONS down
 
 
 sql-migrate
+export PATH=$PATH:$(go env GOPATH)/bin
+

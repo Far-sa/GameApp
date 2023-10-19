@@ -12,6 +12,7 @@ migrate_down:
 migrate_status:
 	sql-migrate status -env="production" -config=./repository/mysql/dbconfig.yml
 	
+	
 ## sqlx-cli
 # create_migrations:
 # 	sqlx migrate add -r --source repository/mysql/migrations init
