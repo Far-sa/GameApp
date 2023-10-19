@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"game-app/entity"
 	"game-app/pkg/phonenumber"
+	"game-app/pkg/richerror"
 )
 
 type Repository interface {
@@ -128,19 +129,20 @@ type LoginResponse struct {
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
-
+	const op = "userservice.Login"
 	//! TODO --> it is better to use SOLID principle- imporove functionality for each task separately
 	// check the phone number which is already exist
 	// get user by phone number
 	user, exist, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
 	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected error %w", err)
+		return LoginResponse{}, richerror.New(op).WithErr(err).WithMessage("invalid info")
 	}
 
 	if !exist {
 		return LoginResponse{}, fmt.Errorf("record not found %w", err)
 	}
 
+	fmt.Printf("userrrrrrrrrrrr: %+v", user)
 	if user.Password != getMD5Hash(req.Password) {
 		return LoginResponse{}, fmt.Errorf("username/ password incorrect")
 	}
@@ -171,10 +173,15 @@ type ProfileResponse struct {
 }
 
 func (s Service) Profile(req ProfileRequest) (ProfileResponse, error) {
+	const op = "userservice.Profile"
+
 	user, err := s.repo.GetUserById(uint64(req.UserID))
 	if err != nil {
-		//* TODO - use rich error
-		return ProfileResponse{}, fmt.Errorf("unexpected error: %w", err)
+		//!  - use rich error to develope error handling from different layers
+		return ProfileResponse{}, richerror.New(op).WithErr(err).
+			WithMeta(map[string]interface{}{"req": req})
+
+		//return ProfileResponse{}, fmt.Errorf("unexpected error: %w", err)
 	}
 	return ProfileResponse{Name: user.Name}, nil
 }
@@ -183,5 +190,3 @@ func getMD5Hash(test string) string {
 	hash := md5.Sum([]byte(test))
 	return hex.EncodeToString(hash[:])
 }
-
-// * custome claims
