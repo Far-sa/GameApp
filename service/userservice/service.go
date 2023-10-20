@@ -137,12 +137,12 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	if err != nil {
 		return LoginResponse{}, richerror.New(op).WithErr(err).WithMessage("invalid info")
 	}
+	fmt.Printf("user found by phone: %+v", user)
 
 	if !exist {
 		return LoginResponse{}, fmt.Errorf("record not found %w", err)
 	}
 
-	fmt.Printf("userrrrrrrrrrrr: %+v", user)
 	if user.Password != getMD5Hash(req.Password) {
 		return LoginResponse{}, fmt.Errorf("username/ password incorrect")
 	}

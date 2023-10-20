@@ -82,7 +82,7 @@ func scanUser(row *sql.Row) (entity.User, error) {
 	var createdAt []uint8
 	var user entity.User
 
-	err := row.Scan(&user.ID, &user.Name, &user.Password, &user.PhoneNumber, &createdAt)
+	err := row.Scan(&user.ID, &user.PhoneNumber, &user.Name, &user.Password, &createdAt)
 
 	return user, err
 }
