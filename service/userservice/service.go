@@ -135,9 +135,9 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	// get user by phone number
 	user, exist, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
 	if err != nil {
-		return LoginResponse{}, richerror.New(op).WithErr(err).WithMessage("invalid info")
+		return LoginResponse{}, richerror.New(op).WithErr(err).
+			WithMeta(map[string]interface{}{"phone_number": req.PhoneNumber})
 	}
-	fmt.Printf("user found by phone: %+v", user)
 
 	if !exist {
 		return LoginResponse{}, fmt.Errorf("record not found %w", err)

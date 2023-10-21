@@ -8,10 +8,12 @@ import (
 	"game-app/pkg/richerror"
 )
 
+// TODO implement sqlx
+
 func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
 
-	query := "insert into users(name,phone_number,password) values(?,?,?)"
-	res, err := r.db.Exec(query, user.Name, user.PhoneNumber, user.Password)
+	query := "insert into users(phone_number,name,password) values(?,?,?)"
+	res, err := r.db.Exec(query, user.PhoneNumber, user.Name, user.Password)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("can not execute commnad %w", err)
 	}
@@ -25,7 +27,7 @@ func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
 
 func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 
-	query := "select id,name,password,phone_number,created_at from users where phone_number=?"
+	query := "select * from users where phone_number=?"
 	row := r.db.QueryRow(query, phoneNumer)
 
 	_, err := scanUser(row)
