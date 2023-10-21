@@ -26,6 +26,7 @@ func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
 }
 
 func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
+	const op = "mysql.UniquenePhonenumber"
 
 	query := "select * from users where phone_number=?"
 	row := r.db.QueryRow(query, phoneNumer)
@@ -36,7 +37,8 @@ func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 			return true, nil
 		}
 
-		return false, fmt.Errorf("can not scan query result :%w", err)
+		return false, richerror.New(op).WithMessage(errs.ErrorMsgCantQuery).
+			WithErr(err).WithKind(richerror.KindUnexpected)
 	}
 
 	return false, nil

@@ -1,8 +1,8 @@
 package httpserver
 
 import (
+	"game-app/dto"
 	"game-app/pkg/httpmsg"
-	"game-app/service/userservice"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -10,7 +10,7 @@ import (
 
 func (s Server) userRegister(c echo.Context) error {
 
-	var req userservice.RegisterRequest
+	var req dto.RegisterRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
@@ -25,7 +25,7 @@ func (s Server) userRegister(c echo.Context) error {
 
 func (s Server) userLogin(c echo.Context) error {
 
-	var req userservice.LoginRequest
+	var req dto.LoginRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
@@ -50,7 +50,7 @@ func (s Server) userProfile(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 
-	resp, err := s.userSrv.Profile(userservice.ProfileRequest{UserID: claims.UserID})
+	resp, err := s.userSrv.Profile(dto.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		msg, code := httpmsg.Error(err)
 		return echo.NewHTTPError(code, msg)
