@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"game-app/dto"
 	"game-app/entity"
-	"game-app/pkg/phonenumber"
 	"game-app/pkg/richerror"
 )
 
@@ -37,30 +36,7 @@ func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error)
 
 	//? TODO --> verify phone number with verification code
 
-	//* validate phone number && uniqueness
-	if !phonenumber.IsValid(req.PhoneNumber) {
-		return dto.RegisterResponse{}, fmt.Errorf("phone number is not valid")
-	}
-
-	if isUnigue, err := s.repo.UniquenePhonenumber(req.PhoneNumber); err != nil || !isUnigue {
-		if err != nil {
-			return dto.RegisterResponse{}, fmt.Errorf("unexpected error: %w", err)
-		}
-		if !isUnigue {
-			return dto.RegisterResponse{}, fmt.Errorf("phone number is not unique")
-		}
-	}
-
-	//* validate  name
-	if len(req.Name) < 3 {
-		return dto.RegisterResponse{}, fmt.Errorf("name should be at least 3 characters")
-	}
-
-	//? TODO use regex to validate password
-	//* validate Password
-	if len(req.Password) < 4 {
-		return dto.RegisterResponse{}, fmt.Errorf("password should be at least 4 characters")
-	}
+	//* --> assign reqiest validation in other service
 
 	//* third party bcrypt
 	// bcrypt.GenerateFromPassword(pass, 0)

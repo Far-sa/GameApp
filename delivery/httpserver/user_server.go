@@ -15,6 +15,15 @@ func (s Server) userRegister(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
+	//use validator pkg
+	if err, fieldErros := s.userValidator.ValidateRegisterRequest(req); err != nil {
+		msg, code := httpmsg.Error(err)
+		return c.JSON(code, echo.Map{
+			"message": msg,
+			"errors":  fieldErros,
+		})
+	}
+
 	resp, err := s.userSrv.Register(req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
