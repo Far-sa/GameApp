@@ -18,7 +18,7 @@ func (v Validator) ValidateRegisterRequest(req dto.RegisterRequest) (map[string]
 			Error(errs.ErrorMsgNameLengthError)),
 
 		validation.Field(&req.PhoneNumber, validation.Required,
-			validation.Match(regexp.MustCompile(req.PhoneNumber)).Error("Invalid phone number"),
+			validation.Match(regexp.MustCompile(req.PhoneNumber)).Error(errs.ErrorMsgInvalidPhoneNumber),
 			//* use custom validation
 			validation.By(v.checkPhoneNumberUniqueess)),
 

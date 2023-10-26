@@ -16,7 +16,7 @@ func (v Validator) ValidateLoginRequest(req dto.LoginRequest) (map[string]string
 	if err := validation.ValidateStruct(&req,
 
 		validation.Field(&req.PhoneNumber, validation.Required,
-			validation.Match(regexp.MustCompile(phoneNumberRegex)).Error("Invalid phone number"),
+			validation.Match(regexp.MustCompile(phoneNumberRegex)).Error(errs.ErrorMsgInvalidPhoneNumber),
 			//* use custom validation
 			validation.By(v.doesPhoneNumberExsit)),
 	); err != nil {

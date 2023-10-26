@@ -56,6 +56,15 @@ func (h Handler) userLogin(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
+	//* validate Login
+	if _, err := h.userValidator.ValidateLoginRequest(req); err != nil {
+		msg, code := httpmsg.Error(err)
+		return c.JSON(code, echo.Map{
+			"messsage": msg,
+			"errors":   err,
+		})
+	}
+
 	resp, err := h.userSrv.Login(req)
 	if err != nil {
 		msg, code := httpmsg.Error(err)
@@ -86,8 +95,8 @@ func (h Handler) userProfile(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (h Handler) healthCheck(c echo.Context) error {
-	return c.JSON(http.StatusOK, echo.Map{
-		"message": "everything is fine",
-	})
-}
+// func (h Handler) healthCheck(c echo.Context) error {
+// 	return c.JSON(http.StatusOK, echo.Map{
+// 		"message": "everything is fine",
+// 	})
+// }

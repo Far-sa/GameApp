@@ -9,4 +9,5 @@ const (
 	ErrorMsgNameLengthError        = "name should be at least 3 characters"
 	ErroMsgPasswordLenght          = "password should be at least 4 characters"
 	ErrorMsgInvalidInput           = "invalid input"
+	ErrorMsgInvalidPhoneNumber     = "phone number is not valid number"
 )
