@@ -18,10 +18,11 @@ type Server struct {
 	userHandler userhandler.Handler
 }
 
-func New(config config.Config, authSrv authservice.Service, userSrv userservice.Service, userValidator uservalidator.Validator) Server {
+func New(config config.Config, authSrv authservice.Service,
+	userSrv userservice.Service, userValidator uservalidator.Validator) Server {
 	return Server{
 		config:      config,
-		userHandler: userhandler.New(authSrv, userSrv, userValidator),
+		userHandler: userhandler.New(config.Auth, authSrv, userSrv, userValidator),
 	}
 }
 

@@ -1,6 +1,7 @@
 package userhandler
 
 import (
+	"fmt"
 	"game-app/param"
 	"game-app/pkg/httpmsg"
 	"game-app/service/authservice"
@@ -12,13 +13,15 @@ import (
 )
 
 type Handler struct {
+	authConfig    authservice.Config
 	authSrv       authservice.Service
 	userSrv       userservice.Service
 	userValidator uservalidator.Validator
 }
 
-func New(authSrv authservice.Service, userSrv userservice.Service, userValidator uservalidator.Validator) Handler {
+func New(authConfig authservice.Config, authSrv authservice.Service, userSrv userservice.Service, userValidator uservalidator.Validator) Handler {
 	return Handler{
+		authConfig:    authConfig,
 		authSrv:       authSrv,
 		userSrv:       userSrv,
 		userValidator: userValidator,
@@ -76,14 +79,20 @@ func (h Handler) userLogin(c echo.Context) error {
 
 }
 
+func getClaims(c echo.Context) *authservice.Claims {
+	claims := c.Get("user")
+	fmt.Println("claims", claims)
+	cl, ok := claims.(*authservice.Claims)
+	if !ok {
+		panic("claim was not found")
+	}
+
+	return cl
+}
+
 func (h Handler) userProfile(c echo.Context) error {
 
-	authToken := c.Request().Header.Get("Authorization")
-
-	claims, err := h.authSrv.VerifyToken(authToken)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
-	}
+	claims := getClaims(c)
 
 	resp, err := h.userSrv.Profile(param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
