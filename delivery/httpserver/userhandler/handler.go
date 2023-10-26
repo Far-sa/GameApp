@@ -1,14 +1,31 @@
-package httpserver
+package userhandler
 
 import (
 	"game-app/dto"
 	"game-app/pkg/httpmsg"
+	"game-app/service/authservice"
+	"game-app/service/userservice"
+	"game-app/validator/uservalidator"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-func (s Server) userRegister(c echo.Context) error {
+type Handler struct {
+	authSrv       authservice.Service
+	userSrv       userservice.Service
+	userValidator uservalidator.Validator
+}
+
+func New(authSrv authservice.Service, userSrv userservice.Service, userValidator uservalidator.Validator) Handler {
+	return Handler{
+		authSrv:       authSrv,
+		userSrv:       userSrv,
+		userValidator: userValidator,
+	}
+}
+
+func (h Handler) userRegister(c echo.Context) error {
 
 	var req dto.RegisterRequest
 	if err := c.Bind(&req); err != nil {
@@ -16,7 +33,7 @@ func (s Server) userRegister(c echo.Context) error {
 	}
 
 	//use validator pkg
-	if fieldErros, err := s.userValidator.ValidateRegisterRequest(req); err != nil {
+	if fieldErros, err := h.userValidator.ValidateRegisterRequest(req); err != nil {
 		msg, code := httpmsg.Error(err)
 		return c.JSON(code, echo.Map{
 			"message": msg,
@@ -24,7 +41,7 @@ func (s Server) userRegister(c echo.Context) error {
 		})
 	}
 
-	resp, err := s.userSrv.Register(req)
+	resp, err := h.userSrv.Register(req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -32,14 +49,14 @@ func (s Server) userRegister(c echo.Context) error {
 	return c.JSON(http.StatusCreated, resp)
 }
 
-func (s Server) userLogin(c echo.Context) error {
+func (h Handler) userLogin(c echo.Context) error {
 
 	var req dto.LoginRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
-	resp, err := s.userSrv.Login(req)
+	resp, err := h.userSrv.Login(req)
 	if err != nil {
 		msg, code := httpmsg.Error(err)
 		return echo.NewHTTPError(code, msg)
@@ -50,16 +67,16 @@ func (s Server) userLogin(c echo.Context) error {
 
 }
 
-func (s Server) userProfile(c echo.Context) error {
+func (h Handler) userProfile(c echo.Context) error {
 
 	authToken := c.Request().Header.Get("Authorization")
 
-	claims, err := s.authSrv.VerifyToken(authToken)
+	claims, err := h.authSrv.VerifyToken(authToken)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 
-	resp, err := s.userSrv.Profile(dto.ProfileRequest{UserID: claims.UserID})
+	resp, err := h.userSrv.Profile(dto.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		msg, code := httpmsg.Error(err)
 		return echo.NewHTTPError(code, msg)
@@ -69,7 +86,7 @@ func (s Server) userProfile(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (s Server) healthCheck(c echo.Context) error {
+func (h Handler) healthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "everything is fine",
 	})

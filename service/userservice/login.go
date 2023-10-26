@@ -11,14 +11,10 @@ func (s Service) Login(req dto.LoginRequest) (dto.LoginResponse, error) {
 	//! TODO --> it is better to use SOLID principle- imporove functionality for each task separately
 	// check the phone number which is already exist
 	// get user by phone number
-	user, exist, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
+	user, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
 	if err != nil {
 		return dto.LoginResponse{}, richerror.New(op).WithErr(err).
 			WithMeta(map[string]interface{}{"phone_number": req.PhoneNumber})
-	}
-
-	if !exist {
-		return dto.LoginResponse{}, fmt.Errorf("record not found %w", err)
 	}
 
 	if user.Password != getMD5Hash(req.Password) {
