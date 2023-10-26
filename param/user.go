@@ -1,6 +1,6 @@
-package dto
+package param
 
-// * DTOs
+// * Paramas
 type RegisterRequest struct {
 	Name        string `json:"name"`
 	PhoneNumber string `json:"phone_number"`
@@ -17,7 +17,6 @@ type RegisterResponse struct {
 	User UserInfo `json:"user"`
 }
 
-// * DTOs
 type LoginRequest struct {
 	PhoneNumber string `json:"phone_number"`
 	Password    string `json:"password"`
@@ -34,7 +33,6 @@ type LoginResponse struct {
 	Tokens Tokens   `json:"token"`
 }
 
-// * DTOs
 type ProfileRequest struct {
 	UserID uint `json:"user_id"`
 }

@@ -10,7 +10,6 @@ require (
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/golang-jwt/jwt/v4 v4.5.0
-	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.11.2
 	github.com/rubenv/sql-migrate v1.5.2
 )

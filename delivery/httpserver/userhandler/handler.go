@@ -1,7 +1,7 @@
 package userhandler
 
 import (
-	"game-app/dto"
+	"game-app/param"
 	"game-app/pkg/httpmsg"
 	"game-app/service/authservice"
 	"game-app/service/userservice"
@@ -27,7 +27,7 @@ func New(authSrv authservice.Service, userSrv userservice.Service, userValidator
 
 func (h Handler) userRegister(c echo.Context) error {
 
-	var req dto.RegisterRequest
+	var req param.RegisterRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
@@ -51,7 +51,7 @@ func (h Handler) userRegister(c echo.Context) error {
 
 func (h Handler) userLogin(c echo.Context) error {
 
-	var req dto.LoginRequest
+	var req param.LoginRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
@@ -85,7 +85,7 @@ func (h Handler) userProfile(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 
-	resp, err := h.userSrv.Profile(dto.ProfileRequest{UserID: claims.UserID})
+	resp, err := h.userSrv.Profile(param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		msg, code := httpmsg.Error(err)
 		return echo.NewHTTPError(code, msg)

@@ -2,11 +2,11 @@ package userservice
 
 import (
 	"fmt"
-	"game-app/dto"
 	"game-app/entity"
+	"game-app/param"
 )
 
-func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error) {
+func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, error) {
 
 	//? TODO --> verify phone number with verification code
 
@@ -25,11 +25,11 @@ func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error)
 
 	createdUser, err := s.repo.RegisterUser(user)
 	if err != nil {
-		return dto.RegisterResponse{}, fmt.Errorf("unexpected error: %w", err)
+		return param.RegisterResponse{}, fmt.Errorf("unexpected error: %w", err)
 	}
 
 	//* return Created User
-	return dto.RegisterResponse{User: dto.UserInfo{
+	return param.RegisterResponse{User: param.UserInfo{
 		ID:          createdUser.ID,
 		Name:        createdUser.Name,
 		PhoneNumber: createdUser.PhoneNumber,
