@@ -10,7 +10,6 @@ import (
 )
 
 type Repository interface {
-	UniquenePhonenumber(phoneNumer string) (bool, error)
 	RegisterUser(user entity.User) (entity.User, error)
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error)
 	GetUserById(userID uint64) (entity.User, error)
