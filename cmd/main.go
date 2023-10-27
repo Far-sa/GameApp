@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"game-app/config"
 	"game-app/delivery/httpserver"
 	"game-app/repository/mysql"
@@ -19,6 +20,9 @@ const (
 )
 
 func main() {
+	// TODO read config path from cmd
+	cfg2 := config.Load("config.yml")
+	fmt.Printf("cfg2 : %+v\n", cfg2)
 
 	cfg := config.Config{
 		HTTPServer: config.HTTPServer{Port: 8000},
