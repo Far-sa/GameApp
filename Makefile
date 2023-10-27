@@ -4,18 +4,18 @@
 
 
 ## sql-migrate
-# create_migrations:
-# 	sql-migrate new -env="production" -config=repository/mysql/dbconfig.yml
+create_migrations:
+	sql-migrate new -env="production" -config=repository/mysql/dbconfig.yml
 	
-# migrate_up:
-# 	sql-migrate up -env="production" -config=repository/mysql/dbconfig.yml
+migrate_up:
+	sql-migrate up -env="production" -config=repository/mysql/dbconfig.yml
 
-# migrate_down:
-# 	sql-migrate down -env="production" -config=repository/mysql/dbconfig.yml
-# #sql-migrate down -env="production" -config=./repository/mysql/dbconfig.yml -limit=1
+migrate_down:
+	sql-migrate down -env="production" -config=repository/mysql/dbconfig.yml
+#sql-migrate down -env="production" -config=./repository/mysql/dbconfig.yml -limit=1
 	
-# migrate_status:
-# 	sql-migrate status -env="production" -config=./repository/mysql/dbconfig.yml
+migrate_status:
+	sql-migrate status -env="production" -config=./repository/mysql/dbconfig.yml
 	
 	
 ## sqlx-cli
@@ -35,13 +35,13 @@
 # sqlx migrate run -env="production" -config=dbconfig.yml
 
 ## migrate
-create_migrate:
-	migrate create -ext sql -dir repository/mysql/migrations -seq init_schema
+# create_migrate:
+# 	migrate create -ext sql -dir repository/mysql/migrations -seq init_schema
 
 
-migrate_up:
-	 migrate -path repository/mysql/migrations -database "mysql://root:password@tcp(localhost:3306)/gamedb" -verbose up
+# migrate_up:
+# 	 migrate -path repository/mysql/migrations -database "mysql://root:password@tcp(localhost:3306)/gamedb" -verbose up
 
 
-migrate_down:
-	 migrate -path repository/mysql/migrations -database "mysql://root:password@tcp(localhost:3306)/gamedb" -verbose down
+# migrate_down:
+# 	 migrate -path repository/mysql/migrations -database "mysql://root:password@tcp(localhost:3306)/gamedb" -verbose down
