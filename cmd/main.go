@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"game-app/config"
 	"game-app/delivery/httpserver"
-	"game-app/repository/migrator"
 	"game-app/repository/mysql"
 	"game-app/service/authservice"
 	"game-app/service/userservice"
@@ -45,8 +44,8 @@ func main() {
 	}
 
 	//* add migrator
-	mgr := migrator.New(cfg.Mysql)
-	mgr.Up()
+	// mgr := migrator.New(cfg.Mysql)
+	// mgr.Up()
 
 	authSrv, userSrv, userValidator := setupServices(cfg)
 

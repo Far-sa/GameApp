@@ -64,7 +64,7 @@ func (r MySQLDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) {
 	return user, nil
 }
 
-func (r MySQLDB) GetUserById(userID uint64) (entity.User, error) {
+func (r MySQLDB) GetUserById(userID uint) (entity.User, error) {
 	const op = "mysql.GetUserById"
 
 	row := r.db.QueryRow(`select * from users where id=?`, userID)
@@ -83,11 +83,11 @@ func (r MySQLDB) GetUserById(userID uint64) (entity.User, error) {
 	return user, nil
 }
 
-func scanUser(row *sql.Row) (entity.User, error) {
+func scanUser(scanner Scanner) (entity.User, error) {
 	var createdAt []uint8
 	var user entity.User
 
-	err := row.Scan(&user.ID, &user.PhoneNumber, &user.Name, &user.Password, &createdAt)
+	err := scanner.Scan(&user.ID, &user.PhoneNumber, &user.Name, &user.Password, &createdAt)
 
 	return user, err
 }
