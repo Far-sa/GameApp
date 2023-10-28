@@ -1,4 +1,4 @@
-package mysql
+package user
 
 import (
 	"database/sql"
@@ -6,14 +6,15 @@ import (
 	"game-app/entity"
 	"game-app/pkg/errs"
 	"game-app/pkg/richerror"
+	"game-app/repository/mysql"
 )
 
 // TODO implement sqlx
 
-func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
+func (r *DB) RegisterUser(user entity.User) (entity.User, error) {
 
 	query := "insert into users(phone_number,name,password) values(?,?,?)"
-	res, err := r.db.Exec(query, user.PhoneNumber, user.Name, user.Password)
+	res, err := r.conn.Conn().Exec(query, user.PhoneNumber, user.Name, user.Password)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("can not execute commnad %w", err)
 	}
@@ -25,11 +26,11 @@ func (r MySQLDB) RegisterUser(user entity.User) (entity.User, error) {
 
 }
 
-func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
+func (r *DB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 	const op = "mysql.UniquenePhonenumber"
 
 	query := "select * from users where phone_number=?"
-	row := r.db.QueryRow(query, phoneNumer)
+	row := r.conn.Conn().QueryRow(query, phoneNumer)
 
 	_, err := scanUser(row)
 	if err != nil {
@@ -44,10 +45,10 @@ func (r MySQLDB) UniquenePhonenumber(phoneNumer string) (bool, error) {
 	return false, nil
 }
 
-func (r MySQLDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) {
+func (r *DB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) {
 	const op = "mysql.GetUserByPhoneNumber"
 
-	row := r.db.QueryRow(`select * from users where phone_number=?`, phoneNumber)
+	row := r.conn.Conn().QueryRow(`select * from users where phone_number=?`, phoneNumber)
 
 	user, err := scanUser(row)
 	if err != nil {
@@ -64,10 +65,10 @@ func (r MySQLDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) {
 	return user, nil
 }
 
-func (r MySQLDB) GetUserById(userID uint) (entity.User, error) {
+func (r *DB) GetUserById(userID uint) (entity.User, error) {
 	const op = "mysql.GetUserById"
 
-	row := r.db.QueryRow(`select * from users where id=?`, userID)
+	row := r.conn.Conn().QueryRow(`select * from users where id=?`, userID)
 
 	user, err := scanUser(row)
 	if err != nil {
@@ -83,7 +84,7 @@ func (r MySQLDB) GetUserById(userID uint) (entity.User, error) {
 	return user, nil
 }
 
-func scanUser(scanner Scanner) (entity.User, error) {
+func scanUser(scanner mysql.Scanner) (entity.User, error) {
 	var createdAt []uint8
 	var user entity.User
 

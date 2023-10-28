@@ -1,11 +1,12 @@
-package mysql
+package accessctl
 
 import (
 	"game-app/entity"
+	"game-app/repository/mysql"
 	"time"
 )
 
-func scanPermission(scanner Scanner) (entity.Permission, error) {
+func scanPermission(scanner mysql.Scanner) (entity.Permission, error) {
 	var createdAt time.Time
 	var p entity.Permission
 

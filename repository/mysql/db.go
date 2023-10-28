@@ -23,6 +23,10 @@ type MySQLDB struct {
 	db     *sql.DB
 }
 
+func (m *MySQLDB) Conn() *sql.DB {
+	return m.db
+}
+
 func NewMYSQL(config Config) *MySQLDB {
 
 	vErr := godotenv.Load(".env")
