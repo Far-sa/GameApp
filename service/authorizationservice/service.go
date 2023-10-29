@@ -1,20 +1,37 @@
 package authorizationservice
 
-import "game-app/entity"
+import (
+	"game-app/entity"
+	"game-app/pkg/richerror"
+)
 
 type Repository interface {
-	GetUserPermissionTitles(userID uint) ([]entity.PermissionTitle, error)
+	GetUserPermissionTitles(userID uint, role entity.Role) ([]entity.PermissionTitle, error)
 }
 
-type Service struct{}
+type Service struct {
+	repo Repository
+}
 
-func (s Service) CheckAccess(userID uint, permissions ...entity.PermissionTitle) (bool, error) {
-	// get user role
-	// get all permissions for the given role
+func New(repo Repository) Service {
+	return Service{repo: repo}
+}
 
-	// merge ACLs
+func (s Service) CheckAccess(userID uint, role entity.Role, permissions ...entity.PermissionTitle) (bool, error) {
+	const op = "authorizationservice.checkAccess"
 
-	// check the access
+	permissionTitles, err := s.repo.GetUserPermissionTitles(userID, role)
+	if err != nil {
+		return false, richerror.New(op).WithErr(err)
+	}
+
+	for _, pt := range permissionTitles {
+		for _, p := range permissions {
+			if p == pt {
+				return true, nil
+			}
+		}
+	}
 
 	return false, nil
 }

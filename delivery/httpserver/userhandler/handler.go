@@ -1,8 +1,8 @@
 package userhandler
 
 import (
-	"fmt"
 	"game-app/param"
+	"game-app/pkg/claims"
 	"game-app/pkg/httpmsg"
 	"game-app/service/authservice"
 	"game-app/service/userservice"
@@ -79,20 +79,9 @@ func (h Handler) userLogin(c echo.Context) error {
 
 }
 
-func getClaims(c echo.Context) *authservice.Claims {
-	claims := c.Get("user")
-	fmt.Println("claims", claims)
-	cl, ok := claims.(*authservice.Claims)
-	if !ok {
-		panic("claim was not found")
-	}
-
-	return cl
-}
-
 func (h Handler) userProfile(c echo.Context) error {
 
-	claims := getClaims(c)
+	claims := claims.GetClaimFromEchoCTX(c)
 
 	resp, err := h.userSrv.Profile(param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {

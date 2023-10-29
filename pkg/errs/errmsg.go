@@ -10,4 +10,5 @@ const (
 	ErroMsgPasswordLenght          = "password should be at least 4 characters"
 	ErrorMsgInvalidInput           = "invalid input"
 	ErrorMsgInvalidPhoneNumber     = "phone number is not valid number"
+	ErrorMsgAccessDenied           = "access denied"
 )
