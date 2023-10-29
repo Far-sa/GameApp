@@ -3,11 +3,9 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -29,10 +27,10 @@ func (m *MySQLDB) Conn() *sql.DB {
 
 func NewMYSQL(config Config) *MySQLDB {
 
-	vErr := godotenv.Load(".env")
-	if vErr != nil {
-		log.Fatal("Error loading environment")
-	}
+	// vErr := godotenv.Load(".env")
+	// if vErr != nil {
+	// 	log.Fatal("Error loading environment")
+	// }
 
 	//* pardeTime=true changes the output type of DATE and DATETIME \
 	//* values to time.time instead of []byte / string

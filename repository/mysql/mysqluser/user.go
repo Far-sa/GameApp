@@ -1,4 +1,4 @@
-package user
+package mysqluser
 
 import (
 	"database/sql"
@@ -13,8 +13,8 @@ import (
 
 func (r *DB) RegisterUser(user entity.User) (entity.User, error) {
 
-	query := "insert into users(phone_number,name,password) values(?,?,?)"
-	res, err := r.conn.Conn().Exec(query, user.PhoneNumber, user.Name, user.Password)
+	query := "insert into users(phone_number,name,password,role) values(?,?,?,?)"
+	res, err := r.conn.Conn().Exec(query, user.PhoneNumber, user.Name, user.Password, user.Role.String())
 	if err != nil {
 		return entity.User{}, fmt.Errorf("can not execute commnad %w", err)
 	}
@@ -88,7 +88,11 @@ func scanUser(scanner mysql.Scanner) (entity.User, error) {
 	var createdAt []uint8
 	var user entity.User
 
-	err := scanner.Scan(&user.ID, &user.PhoneNumber, &user.Name, &user.Password, &createdAt)
+	var roleStr string
+
+	err := scanner.Scan(&user.ID, &user.PhoneNumber, &user.Name, &user.Password, &createdAt, &roleStr)
+
+	user.Role = entity.MapToRoleEntity(roleStr)
 
 	return user, err
 }

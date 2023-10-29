@@ -7,6 +7,7 @@ CREATE TABLE `permissions` (
 
 );
 
+
 -- +migrate Down
 DROP TABLE IF EXISTS `permissions`;
 

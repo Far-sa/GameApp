@@ -9,7 +9,7 @@ import (
 type Repository interface {
 	RegisterUser(user entity.User) (entity.User, error)
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, error)
-	GetUserById(userID uint64) (entity.User, error)
+	GetUserById(userID uint) (entity.User, error)
 }
 
 // ! interface composibility -->  helpul for test

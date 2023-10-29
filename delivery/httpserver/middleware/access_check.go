@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"game-app/entity"
 	"game-app/pkg/claims"
 	"game-app/pkg/errs"
 	"game-app/service/authorizationservice"
@@ -9,11 +10,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func AccessCheck(service authorizationservice.Service) echo.MiddlewareFunc {
+func AccessCheck(service authorizationservice.Service,
+	permissions ...entity.PermissionTitle) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) (err error) {
 			claims := claims.GetClaimFromEchoCTX(c)
-			isAllowed, err := service.CheckAccess(claims.UserID, claims.Role)
+			isAllowed, err := service.CheckAccess(claims.UserID, claims.Role, permissions...)
 			if err != nil {
 				// TODO -> log unexpected error
 				return c.JSON(http.StatusInternalServerError, echo.Map{
