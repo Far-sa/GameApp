@@ -1,18 +1,26 @@
 package entity
 
-type Category struct {
-	ID          uint
-	Title       string
-	Description string
-}
+// type Category struct {
+// 	ID          uint
+// 	Title       string
+// 	Description string
+// }
 
 // *
-// type Category string
+type Category string
 
-// const (
-// 	CategorySport   Category = "sport"
-// 	CategoryHistory Category = "history"
-// )
+const (
+	CategorySport Category = "sport"
+	//CategoryHistory Category = "history"
+)
+
+func (c Category) IsValid() bool {
+	switch c {
+	case CategorySport:
+		return true
+	}
+	return false
+}
 
 //*
 // type Category uint

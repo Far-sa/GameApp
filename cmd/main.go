@@ -10,7 +10,9 @@ import (
 	"game-app/service/authorizationservice"
 	"game-app/service/authservice"
 	"game-app/service/backofficeuserservice"
+	"game-app/service/matchingservice"
 	"game-app/service/userservice"
+	"game-app/validator/matchingvalidator"
 	"game-app/validator/uservalidator"
 	"time"
 )
@@ -51,16 +53,22 @@ func main() {
 	// mgr := migrator.New(cfg.Mysql)
 	// mgr.Up()
 
-	authSrv, userSrv, userValidator, backofficeUserSvc, authorizationSvc := setupServices(cfg)
+	// TODO : add struct
+	authSrv, userSrv, userValidator, backofficeUserSvc,
+		authorizationSvc, matchingSvc, matchingV := setupServices(cfg)
 
-	server := httpserver.New(cfg, authSrv, userSrv, userValidator, backofficeUserSvc, authorizationSvc)
+	server := httpserver.New(
+		cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
+		authorizationSvc, matchingSvc, matchingV)
 
 	server.Serve()
 
 }
 
 func setupServices(cfg config.Config) (authservice.Service, userservice.Service,
-	uservalidator.Validator, backofficeuserservice.Service, authorizationservice.Service) {
+	uservalidator.Validator, backofficeuserservice.Service, authorizationservice.Service,
+	matchingservice.Service, matchingvalidator.Validator,
+) {
 	authSrv := authservice.New(cfg.Auth)
 
 	MysqlRepo := mysql.NewMYSQL(cfg.Mysql)
@@ -75,5 +83,8 @@ func setupServices(cfg config.Config) (authservice.Service, userservice.Service,
 
 	uV := uservalidator.New(userMysql)
 
-	return authSrv, userSvc, uV, backofficeUserSvc, authorizationSvc
+	matchingV := matchingvalidator.New()
+	matchingSvc := matchingservice.New(cfg.MatchingSvc)
+
+	return authSrv, userSvc, uV, backofficeUserSvc, authorizationSvc, matchingSvc, matchingV
 }

@@ -11,4 +11,5 @@ const (
 	ErrorMsgInvalidInput           = "invalid input"
 	ErrorMsgInvalidPhoneNumber     = "phone number is not valid number"
 	ErrorMsgAccessDenied           = "access denied"
+	ErrorMsgInvalidCategory        = "category is not valid"
 )
