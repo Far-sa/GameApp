@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"game-app/adapter/redis"
 	"game-app/config"
@@ -20,6 +21,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/labstack/echo/v4"
 )
 
 const (
@@ -43,12 +46,13 @@ func main() {
 	authSrv, userSrv, userValidator, backofficeUserSvc,
 		authorizationSvc, matchingSvc, matchingV := setupServices(cfg)
 
+	var httpServer *echo.Echo
 	go func() {
 		server := httpserver.New(
 			cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
 			authorizationSvc, matchingSvc, matchingV)
 
-		server.Serve()
+		httpServer = server.Serve()
 	}()
 
 	done := make(chan bool)
@@ -61,6 +65,12 @@ func main() {
 	signal.Notify(exit, os.Interrupt)
 	<-exit
 	fmt.Println("received interrupt signal,shutting down gracefully...")
+
+	//ctx := context.WithTimeout(context.Background(), 5*time.Second)
+	if err := httpServer.Shutdown(context.Background()); err != nil {
+		fmt.Println("httpServer shutdown error:", err)
+	}
+
 	done <- true
 	time.Sleep(5 * time.Second)
 

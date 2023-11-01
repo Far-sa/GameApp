@@ -13,7 +13,6 @@ import (
 	"game-app/service/userservice"
 	"game-app/validator/matchingvalidator"
 	"game-app/validator/uservalidator"
-	"log"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -40,7 +39,7 @@ func New(config config.Config, authSrv authservice.Service,
 	}
 }
 
-func (s Server) Serve() {
+func (s Server) Serve() *echo.Echo {
 
 	e := echo.New()
 
@@ -54,5 +53,7 @@ func (s Server) Serve() {
 	s.matchingHandler.SetRoutes(e)
 
 	// Start server
-	log.Fatal(e.Start(fmt.Sprintf(":%d", s.config.HTTPServer.Port)))
+	address := fmt.Sprintf(":%d", s.config.HTTPServer.Port)
+	go e.Logger.Fatal(e.Start(address))
+	return e
 }
