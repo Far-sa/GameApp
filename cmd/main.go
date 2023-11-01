@@ -9,6 +9,7 @@ import (
 	"game-app/repository/mysql/accessctl"
 	"game-app/repository/mysql/mysqluser"
 	"game-app/repository/redis/redismatching"
+	"game-app/schedular"
 	"game-app/service/authorizationservice"
 	"game-app/service/authservice"
 	"game-app/service/backofficeuserservice"
@@ -16,6 +17,8 @@ import (
 	"game-app/service/userservice"
 	"game-app/validator/matchingvalidator"
 	"game-app/validator/uservalidator"
+	"os"
+	"os/signal"
 	"time"
 )
 
@@ -32,31 +35,6 @@ func main() {
 	cfg := config.Load("config.yml")
 	fmt.Printf("cfg : %+v\n", cfg)
 
-	// cfg := config.Config{
-	// 	HTTPServer: config.HTTPServer{Port: 8000},
-	// 	Auth: authservice.Config{
-	// 		SignKey:               JwtSignKey,
-	// 		AccessExpirationTime:  AccessTokenExpirationDuration,
-	// 		RefreshExpirationTime: RefreshTokenExpirationDuration,
-	// 		AccessSubject:         AccessTokenSubject,
-	// 		RefreshSubject:        RefreshTokenSubject,
-	// 	},
-
-	// 	Mysql: mysql.Config{
-	// 		Username: "root",
-	// 		Password: "password",
-	// 		Host:     "localhost",
-	// 		Port:     3306,
-	// 		DbName:   "gamedb",
-	// 	},
-	// 	Redis: redis.Config{
-	// 		Host:     "localhost",
-	// 		Port:     6380,
-	// 		Password: "",
-	// 		DB:       0,
-	// 	},
-	// }
-
 	//* add migrator
 	// mgr := migrator.New(cfg.Mysql)
 	// mgr.Up()
@@ -65,11 +43,29 @@ func main() {
 	authSrv, userSrv, userValidator, backofficeUserSvc,
 		authorizationSvc, matchingSvc, matchingV := setupServices(cfg)
 
-	server := httpserver.New(
-		cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
-		authorizationSvc, matchingSvc, matchingV)
+	go func() {
+		server := httpserver.New(
+			cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
+			authorizationSvc, matchingSvc, matchingV)
 
-	server.Serve()
+		server.Serve()
+	}()
+
+	done := make(chan bool)
+	go func() {
+		sch := schedular.New()
+		sch.Start(done)
+	}()
+
+	exit := make(chan os.Signal, 1)
+	signal.Notify(exit, os.Interrupt)
+	<-exit
+	fmt.Println("received interrupt signal,shutting down gracefully...")
+	done <- true
+	time.Sleep(5 * time.Second)
+
+	// done := make(chan bool)
+	// <-done
 
 }
 
