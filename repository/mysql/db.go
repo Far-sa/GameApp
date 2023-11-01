@@ -27,11 +27,6 @@ func (m *MySQLDB) Conn() *sql.DB {
 
 func NewMYSQL(config Config) *MySQLDB {
 
-	// vErr := godotenv.Load(".env")
-	// if vErr != nil {
-	// 	log.Fatal("Error loading environment")
-	// }
-
 	//* pardeTime=true changes the output type of DATE and DATETIME \
 	//* values to time.time instead of []byte / string
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", config.Username,

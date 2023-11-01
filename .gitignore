@@ -23,3 +23,10 @@ go.work
 
 # env
 .env
+
+
+data
+config.ymlV
+
+./data
+./config.ymlV

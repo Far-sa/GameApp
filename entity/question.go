@@ -6,7 +6,7 @@ type Question struct {
 	PossibleAnswer  []PossibleAnswer
 	CorrectAnswerID uint
 	Dificulity      QuestionDificulity
-	Cateory         uint
+	Category        uint
 }
 
 type PossibleAnswer struct {

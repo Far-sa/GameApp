@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 
 services:
   database:
@@ -13,7 +13,26 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - dbdata:/var/lib/mysql
+      - ./data/mysql/gameapp_data:/var/lib/mysql
 
-volumes:
-  dbdata:
+  redis:
+    #platform: linux/x86_64
+    image: redis:latest
+    container_name: redis
+    #restart: always
+    ports:
+      - 6380:6379
+    command: redis-server --loglevel warning
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      # - REDIS_TLS_CERT_FILE=/tls/redis.crt
+      # - REDIS_TLS_KEY_FILE=/tls/redis.key
+      # - REDIS_TLS_CA_FILE=/tls/ca.crt
+      # - REDIS_TLS_ENABLED=yes
+      # - REDIS_TLS_PORT=6379
+    volumes:
+      - ./data/redis/gameapp_redis_data:/data
+      - ./config/redis.conf:/redis.conf
+# volumes:
+#   dbdata:
+#   gameapp_redis_data:

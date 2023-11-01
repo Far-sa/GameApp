@@ -1,8 +1,23 @@
+---
 type: yml
 auth:
-  sign_key: teo
+  sign_key: jwt-secret
 
-mysal:
+http_server:
+  port: 8000
+
+mysql:
   port: 3306  
   host: localhost
+  username: root
+  password: password
   db_name: gamedb
+
+redis:
+  port: 6380
+  host: localhost
+  password: ""
+  db: 0
+
+matching_service:
+  waiting_timeout: "2m"

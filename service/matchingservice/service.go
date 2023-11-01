@@ -24,7 +24,7 @@ func New(config Config, repo Repo) Service {
 }
 
 func (s Service) AddToWaitingList(req param.AddToWaitingListRequest) (param.AddToWaitingListResponse, error) {
-	const op = "matchingservice.AddToWaitList"
+	const op = "matchingservice.AddToWaitingList"
 
 	err := s.repo.AddToWaitList(req.UserID, req.Category)
 	if err != nil {

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"game-app/adapter/redis"
 	"game-app/repository/mysql"
 	"game-app/service/authservice"
 	"game-app/service/matchingservice"
@@ -15,4 +16,5 @@ type Config struct {
 	Auth        authservice.Config     `koanf:"auth`
 	Mysql       mysql.Config           `koanf:"mysql"`
 	MatchingSvc matchingservice.Config `koanf:"matching_service`
+	Redis       redis.Config           `koanf:"redis"`
 }
