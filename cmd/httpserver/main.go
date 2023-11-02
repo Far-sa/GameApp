@@ -20,8 +20,6 @@ import (
 	"os"
 	"os/signal"
 	"time"
-
-	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -37,13 +35,12 @@ func main() {
 	authSrv, userSrv, userValidator, backofficeUserSvc,
 		authorizationSvc, matchingSvc, matchingV := setupServices(cfg)
 
-	var httpServer *echo.Echo
-	go func() {
-		server := httpserver.New(
-			cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
-			authorizationSvc, matchingSvc, matchingV)
+	server := httpserver.New(
+		cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
+		authorizationSvc, matchingSvc, matchingV)
 
-		httpServer = server.Serve()
+	go func() {
+		server.Serve()
 	}()
 
 	exit := make(chan os.Signal, 1)
@@ -53,7 +50,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.Application.GracefullShutdownTimeout)
 	defer cancel()
-	if err := httpServer.Shutdown(ctx); err != nil {
+	if err := server.Router.Shutdown(ctx); err != nil {
 		fmt.Println("httpServer shutdown error:", err)
 	}
 
