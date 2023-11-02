@@ -1,14 +1,15 @@
 package userservice
 
 import (
+	"context"
 	"game-app/param"
 	"game-app/pkg/richerror"
 )
 
-func (s Service) Profile(req param.ProfileRequest) (param.ProfileResponse, error) {
+func (s Service) Profile(ctx context.Context, req param.ProfileRequest) (param.ProfileResponse, error) {
 	const op = "userservice.Profile"
 
-	user, err := s.repo.GetUserById(uint(req.UserID))
+	user, err := s.repo.GetUserById(ctx, uint(req.UserID))
 	if err != nil {
 		//!  - use rich error to develope error handling from different layers
 		return param.ProfileResponse{}, richerror.New(op).WithErr(err).

@@ -1,6 +1,7 @@
 package userhandler
 
 import (
+	"context"
 	"game-app/param"
 	"game-app/pkg/claims"
 	"game-app/pkg/httpmsg"
@@ -8,6 +9,7 @@ import (
 	"game-app/service/userservice"
 	"game-app/validator/uservalidator"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -83,7 +85,11 @@ func (h Handler) userProfile(c echo.Context) error {
 
 	claims := claims.GetClaimFromEchoCTX(c)
 
-	resp, err := h.userSrv.Profile(param.ProfileRequest{UserID: claims.UserID})
+	ctx := c.Request().Context()
+	ctxWithTime, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+
+	resp, err := h.userSrv.Profile(ctxWithTime, param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		msg, code := httpmsg.Error(err)
 		return echo.NewHTTPError(code, msg)

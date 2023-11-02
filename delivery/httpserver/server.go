@@ -23,15 +23,19 @@ type Server struct {
 	userHandler           userhandler.Handler
 	backofficeUserHandler backofficeuserhandler.Handler
 	matchingHandler       matchinghandler.Handler
+	Router                *echo.Echo
 }
 
-func New(config config.Config, authSrv authservice.Service,
-	userSrv userservice.Service, userValidator uservalidator.Validator,
-	backofficeUserSvc backofficeuserservice.Service,
+func New(config config.Config,
+	authSrv authservice.Service,
+	userSrv userservice.Service,
+	userValidator uservalidator.Validator,
+	backofficeUserSvc backofficeuserservice.Service, 
 	authorizationSvc authorizationservice.Service,
 	matchingSvc matchingservice.Service,
 	matchingValidator matchingvalidator.Validator) Server {
 	return Server{
+		Router:                echo.New(),
 		config:                config,
 		userHandler:           userhandler.New(config.Auth, authSrv, userSrv, userValidator),
 		backofficeUserHandler: backofficeuserhandler.New(config.Auth, authSrv, backofficeUserSvc, authorizationSvc),
@@ -39,21 +43,18 @@ func New(config config.Config, authSrv authservice.Service,
 	}
 }
 
-func (s Server) Serve() *echo.Echo {
-
-	e := echo.New()
+func (s Server) Serve() {
 
 	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	s.Router.Use(middleware.Logger())
+	s.Router.Use(middleware.Recover())
 
 	//* User Routes
-	s.userHandler.SetRoutes(e)
-	s.backofficeUserHandler.SetRoutes(e)
-	s.matchingHandler.SetRoutes(e)
+	s.userHandler.SetRoutes(s.Router)
+	s.backofficeUserHandler.SetRoutes(s.Router)
+	s.matchingHandler.SetRoutes(s.Router)
 
 	// Start server
 	address := fmt.Sprintf(":%d", s.config.HTTPServer.Port)
-	go e.Logger.Fatal(e.Start(address))
-	return e
+	s.Router.Logger.Fatal(s.Router.Start(address))
 }

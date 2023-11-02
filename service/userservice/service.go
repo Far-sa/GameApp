@@ -1,6 +1,7 @@
 package userservice
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"game-app/entity"
@@ -8,8 +9,8 @@ import (
 
 type Repository interface {
 	RegisterUser(user entity.User) (entity.User, error)
-	GetUserByPhoneNumber(phoneNumber string) (entity.User, error)
-	GetUserById(userID uint) (entity.User, error)
+	GetUserByPhoneNumber(phoneNUmber string) (entity.User, error)
+	GetUserById(ctx context.Context, userID uint) (entity.User, error)
 }
 
 // ! interface composibility -->  helpul for test

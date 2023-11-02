@@ -21,16 +21,6 @@ import (
 	"os"
 	"os/signal"
 	"time"
-
-	"github.com/labstack/echo/v4"
-)
-
-const (
-	JwtSignKey                     = "jwt-secret"
-	AccessTokenSubject             = "at"
-	RefreshTokenSubject            = "rt"
-	AccessTokenExpirationDuration  = time.Hour * 24
-	RefreshTokenExpirationDuration = time.Hour * 24 * 7
 )
 
 func main() {
@@ -46,13 +36,12 @@ func main() {
 	authSrv, userSrv, userValidator, backofficeUserSvc,
 		authorizationSvc, matchingSvc, matchingV := setupServices(cfg)
 
-	var httpServer *echo.Echo
-	go func() {
-		server := httpserver.New(
-			cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
-			authorizationSvc, matchingSvc, matchingV)
+	server := httpserver.New(
+		cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
+		authorizationSvc, matchingSvc, matchingV)
 
-		httpServer = server.Serve()
+	go func() {
+		server.Serve()
 	}()
 
 	done := make(chan bool)
@@ -66,16 +55,18 @@ func main() {
 	<-exit
 	fmt.Println("received interrupt signal,shutting down gracefully...")
 
-	//ctx := context.WithTimeout(context.Background(), 5*time.Second)
-	if err := httpServer.Shutdown(context.Background()); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.Application.GracefullShutdownTimeout)
+	defer cancel()
+
+	if err := server.Router.Shutdown(ctx); err != nil {
 		fmt.Println("httpServer shutdown error:", err)
 	}
 
 	done <- true
-	time.Sleep(5 * time.Second)
+	time.Sleep(cfg.Application.GracefullShutdownTimeout)
 
-	// done := make(chan bool)
-	// <-done
+	// TODO : context doesn't wait for schedular to finish its jobs
+	<-ctx.Done()
 
 }
 
