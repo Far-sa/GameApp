@@ -20,6 +20,7 @@ import (
 	"game-app/validator/uservalidator"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 )
 
@@ -45,9 +46,12 @@ func main() {
 	}()
 
 	done := make(chan bool)
+	var wg sync.WaitGroup
 	go func() {
-		sch := schedular.New()
-		sch.Start(done)
+		sch := schedular.New(matchingSvc)
+
+		wg.Add(1)
+		sch.Start(done, &wg)
 	}()
 
 	exit := make(chan os.Signal, 1)
@@ -67,6 +71,8 @@ func main() {
 
 	// TODO : context doesn't wait for schedular to finish its jobs
 	<-ctx.Done()
+
+	wg.Wait()
 
 }
 

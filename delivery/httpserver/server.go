@@ -30,7 +30,7 @@ func New(config config.Config,
 	authSrv authservice.Service,
 	userSrv userservice.Service,
 	userValidator uservalidator.Validator,
-	backofficeUserSvc backofficeuserservice.Service, 
+	backofficeUserSvc backofficeuserservice.Service,
 	authorizationSvc authorizationservice.Service,
 	matchingSvc matchingservice.Service,
 	matchingValidator matchingvalidator.Validator) Server {
@@ -56,5 +56,7 @@ func (s Server) Serve() {
 
 	// Start server
 	address := fmt.Sprintf(":%d", s.config.HTTPServer.Port)
-	s.Router.Logger.Fatal(s.Router.Start(address))
+	if err := s.Router.Start(address); err != nil {
+		fmt.Println("router error:", err)
+	}
 }
