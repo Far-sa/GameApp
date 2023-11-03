@@ -14,10 +14,17 @@ mysql:
   db_name: gamedb
 
 redis:
-  port: 6380
+  port: 6379
   host: localhost
-  password: ""
   db: 0
+  password: ""
 
 matching_service:
   waiting_timeout: "2m"
+  
+presence_service:
+  presence_expiration_time: "60m"
+  presence_prefix: "presence"
+
+scheduler:
+  match_waited_users_inerval_in_seconds: 30

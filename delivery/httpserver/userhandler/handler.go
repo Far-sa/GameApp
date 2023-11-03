@@ -6,6 +6,7 @@ import (
 	"game-app/pkg/claims"
 	"game-app/pkg/httpmsg"
 	"game-app/service/authservice"
+	"game-app/service/presenceservice"
 	"game-app/service/userservice"
 	"game-app/validator/uservalidator"
 	"net/http"
@@ -19,14 +20,19 @@ type Handler struct {
 	authSrv       authservice.Service
 	userSrv       userservice.Service
 	userValidator uservalidator.Validator
+	presenceSvc   presenceservice.Service
 }
 
-func New(authConfig authservice.Config, authSrv authservice.Service, userSrv userservice.Service, userValidator uservalidator.Validator) Handler {
+func New(authConfig authservice.Config, authSrv authservice.Service,
+	userSrv userservice.Service, userValidator uservalidator.Validator,
+	presenceSvc presenceservice.Service,
+) Handler {
 	return Handler{
 		authConfig:    authConfig,
 		authSrv:       authSrv,
 		userSrv:       userSrv,
 		userValidator: userValidator,
+		presenceSvc:   presenceSvc,
 	}
 }
 

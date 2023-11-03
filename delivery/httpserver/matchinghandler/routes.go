@@ -10,5 +10,6 @@ func (h Handler) SetRoutes(e *echo.Echo) {
 	userGroup := e.Group("/matching")
 
 	userGroup.POST("/add-to-waiting-list", h.addToWaitingList,
-		middleware.Auth(h.authSrv, h.authConfig))
+		middleware.Auth(h.authSrv, h.authConfig),
+		middleware.UpsertPresence(h.presenceSvc))
 }

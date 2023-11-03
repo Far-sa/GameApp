@@ -14,10 +14,11 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./data/mysql/gameapp_data:/var/lib/mysql
+        #- dbdata:/var/lib/mysql
 
   redis:
     #platform: linux/x86_64
-    image: redis:latest
+    image: redis:7.2.2
     container_name: redis
     #restart: always
     ports:
@@ -33,6 +34,8 @@ services:
     volumes:
       - ./data/redis/gameapp_redis_data:/data
       - ./config/redis.conf:/redis.conf
+      #- gameapp_redis_data:/data
+      #- ./config/redis.conf:/redis.conf
 # volumes:
 #   dbdata:
 #   gameapp_redis_data:

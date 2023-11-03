@@ -6,6 +6,7 @@ import (
 	"game-app/pkg/httpmsg"
 	"game-app/service/authservice"
 	"game-app/service/matchingservice"
+	"game-app/service/presenceservice"
 	"game-app/validator/matchingvalidator"
 	"net/http"
 
@@ -17,15 +18,18 @@ type Handler struct {
 	authSrv        authservice.Service
 	matchSrv       matchingservice.Service
 	matchValidator matchingvalidator.Validator
+	presenceSvc    presenceservice.Service
 }
 
-func New(authConfig authservice.Config, authSrv authservice.Service, matchSrv matchingservice.Service,
-	matchValidator matchingvalidator.Validator) Handler {
+func New(authConfig authservice.Config, authSrv authservice.Service,
+	matchSrv matchingservice.Service, matchValidator matchingvalidator.Validator,
+	presenceSvc presenceservice.Service) Handler {
 	return Handler{
 		authConfig:     authConfig,
 		authSrv:        authSrv,
 		matchSrv:       matchSrv,
 		matchValidator: matchValidator,
+		presenceSvc:    presenceSvc,
 	}
 }
 

@@ -22,7 +22,7 @@ func New(config Config) Adapter {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf(" %s:%d", config.Host, config.Port),
 		Password: config.Password,
-		DB:       0, // use default DB
+		DB:       config.DB,
 	})
 
 	return Adapter{client: rdb}

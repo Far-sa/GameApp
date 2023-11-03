@@ -10,11 +10,13 @@ import (
 	"game-app/repository/mysql/accessctl"
 	"game-app/repository/mysql/mysqluser"
 	"game-app/repository/redis/redismatching"
+	"game-app/repository/redis/redispresence"
 	"game-app/schedular"
 	"game-app/service/authorizationservice"
 	"game-app/service/authservice"
 	"game-app/service/backofficeuserservice"
 	"game-app/service/matchingservice"
+	"game-app/service/presenceservice"
 	"game-app/service/userservice"
 	"game-app/validator/matchingvalidator"
 	"game-app/validator/uservalidator"
@@ -35,11 +37,11 @@ func main() {
 
 	// TODO : add struct
 	authSrv, userSrv, userValidator, backofficeUserSvc,
-		authorizationSvc, matchingSvc, matchingV := setupServices(cfg)
+		authorizationSvc, matchingSvc, matchingV, presenceSvc := setupServices(cfg)
 
 	server := httpserver.New(
 		cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
-		authorizationSvc, matchingSvc, matchingV)
+		authorizationSvc, matchingSvc, matchingV, presenceSvc)
 
 	go func() {
 		server.Serve()
@@ -48,7 +50,7 @@ func main() {
 	done := make(chan bool)
 	var wg sync.WaitGroup
 	go func() {
-		sch := schedular.New(matchingSvc)
+		sch := schedular.New(cfg.Schedular, matchingSvc)
 
 		wg.Add(1)
 		sch.Start(done, &wg)
@@ -78,7 +80,7 @@ func main() {
 
 func setupServices(cfg config.Config) (authservice.Service, userservice.Service,
 	uservalidator.Validator, backofficeuserservice.Service, authorizationservice.Service,
-	matchingservice.Service, matchingvalidator.Validator,
+	matchingservice.Service, matchingvalidator.Validator, presenceservice.Service,
 ) {
 	authSrv := authservice.New(cfg.Auth)
 
@@ -100,5 +102,8 @@ func setupServices(cfg config.Config) (authservice.Service, userservice.Service,
 	matchingRepo := redismatching.New(redisAdapter)
 	matchingSvc := matchingservice.New(cfg.MatchingSvc, matchingRepo)
 
-	return authSrv, userSvc, uV, backofficeUserSvc, authorizationSvc, matchingSvc, matchingV
+	presenceRepo := redispresence.New(redisAdapter)
+	presenceSvc := presenceservice.New(cfg.PresenceSvc, presenceRepo)
+
+	return authSrv, userSvc, uV, backofficeUserSvc, authorizationSvc, matchingSvc, matchingV, presenceSvc
 }
