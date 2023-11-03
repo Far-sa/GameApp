@@ -10,16 +10,21 @@ package entity
 type Category string
 
 const (
-	CategorySport Category = "sport"
-	//CategoryHistory Category = "history"
+	SportCategory   = "football"
+	HistoryCategory = "history"
 )
 
 func (c Category) IsValid() bool {
 	switch c {
-	case CategorySport:
+	case SportCategory:
 		return true
 	}
 	return false
+}
+
+func CategoryList() []Category {
+	return []Category{SportCategory, HistoryCategory}
+
 }
 
 //*
