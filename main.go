@@ -100,7 +100,8 @@ func setupServices(cfg config.Config) (authservice.Service, userservice.Service,
 
 	redisAdapter := redis.New(cfg.Redis)
 	matchingRepo := redismatching.New(redisAdapter)
-	matchingSvc := matchingservice.New(cfg.MatchingSvc, matchingRepo)
+	// TODO: replace nil with presence client
+	matchingSvc := matchingservice.New(cfg.MatchingSvc, matchingRepo, nil)
 
 	presenceRepo := redispresence.New(redisAdapter)
 	presenceSvc := presenceservice.New(cfg.PresenceSvc, presenceRepo)

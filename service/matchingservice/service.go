@@ -2,6 +2,7 @@ package matchingservice
 
 import (
 	"context"
+	"fmt"
 	"game-app/entity"
 	"game-app/param"
 	"game-app/pkg/richerror"
@@ -88,7 +89,7 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 
 	presenceUserIDs := make([]uint, len(list))
 	for _, l := range presenceList.Items {
-		userIDs = append(presenceUserIDs, l.UserID)
+		presenceUserIDs = append(presenceUserIDs, l.UserID)
 	}
 
 	// TODO: merge presence list with user id list
@@ -113,5 +114,6 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 		// publish a new event for mu
 
 		// remove mu users from waiting list
+		fmt.Println("mu", mu)
 	}
 }
