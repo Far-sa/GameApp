@@ -113,7 +113,7 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 
 		mu := entity.MatchUsers{
 			Category: category,
-			UserID:   []uint{finalList[i].UserID, finalList[i+1].UserID},
+			UserIDs:  []uint{finalList[i].UserID, finalList[i+1].UserID},
 		}
 		// publish a new event for mu
 
