@@ -13,3 +13,12 @@ migrate -database YOUR_DATABASE_URL -path PATH_TO_YOUR_MIGRATIONS down
 sql-migrate
 export PATH=$PATH:$(go env GOPATH)/bin
 
+
+protoc --go_out=. \
+       --go-grpc_out=. \
+       contract/presence/presence.proto
+
+protoc --go_out=. --go_opt=paths=souce_relatives \
+       --go-grpc_out=. --go-grpc_opt=paths=souce_relatives \
+       port/presence/presence.proto
+

@@ -1,0 +1,34 @@
+package protobufmapper
+
+import (
+	"game-app/contract/golang/presence"
+	"game-app/param"
+)
+
+// converet to protobuf
+func MapGetPresenceResponseToProtobuf(g param.GetPresenceResponse) *presence.GetPresenceResponse {
+	r := &presence.GetPresenceResponse{}
+
+	for _, item := range g.Items {
+		r.Items = append(r.Items, &presence.GetPresenceItem{
+			UserId:    uint64(item.UserID),
+			Timestamp: item.Timestamp,
+		})
+	}
+
+	return r
+}
+
+// converet from protobuf
+func MapGetPresenceResponseFromProtobuf(g *presence.GetPresenceResponse) param.GetPresenceResponse {
+	r := param.GetPresenceResponse{}
+
+	for _, item := range g.Items {
+		r.Items = append(r.Items, param.GetPresenceItem{
+			UserID:    uint(item.UserId),
+			Timestamp: item.Timestamp,
+		})
+	}
+
+	return r
+}
