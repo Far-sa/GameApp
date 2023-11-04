@@ -74,9 +74,13 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 		return
 	}
 
-	userIDs := make([]uint, len(list))
+	userIDs := make([]uint, 0)
 	for _, l := range list {
 		userIDs = append(userIDs, l.UserID)
+	}
+
+	if len(userIDs) < 2 {
+		return
 	}
 
 	//------->
