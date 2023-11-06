@@ -15,6 +15,7 @@ type Config struct {
 
 type Repository interface {
 	Upsert(ctx context.Context, key string, timestamp int64, expTime time.Duration) error
+	GetPresence(ctx context.Context, key string, userIDs []uint) (map[uint]int64, error)
 }
 
 type Service struct {

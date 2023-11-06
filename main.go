@@ -25,8 +25,6 @@ import (
 	"os/signal"
 	"sync"
 	"time"
-
-	"google.golang.org/grpc"
 )
 
 func main() {
@@ -38,15 +36,15 @@ func main() {
 	// mgr := migrator.New(cfg.Mysql)
 	// mgr.Up()
 
-	presenceGRPCconn, err := grpc.Dial(":8086", grpc.WithInsecure())
-	if err != nil {
-		panic(err)
-	}
-	defer presenceGRPCconn.Close()
+	// presenceGRPCconn, err := grpc.Dial(":8086", grpc.WithInsecure())
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer presenceGRPCconn.Close()
 
 	// TODO : add struct
 	authSrv, userSrv, userValidator, backofficeUserSvc, authorizationSvc,
-		matchingSvc, matchingV, presenceSvc := setupServices(cfg, presenceGRPCconn)
+		matchingSvc, matchingV, presenceSvc := setupServices(cfg)
 
 	server := httpserver.New(
 		cfg, authSrv, userSrv, userValidator, backofficeUserSvc,
@@ -87,7 +85,7 @@ func main() {
 
 }
 
-func setupServices(cfg config.Config, presenceGRPCconn *grpc.ClientConn) (authservice.Service, userservice.Service,
+func setupServices(cfg config.Config) (authservice.Service, userservice.Service,
 	uservalidator.Validator, backofficeuserservice.Service, authorizationservice.Service,
 	matchingservice.Service, matchingvalidator.Validator, presenceservice.Service,
 ) {
@@ -116,9 +114,9 @@ func setupServices(cfg config.Config, presenceGRPCconn *grpc.ClientConn) (authse
 
 	//! replace presenceSvc with presence grpc client
 
-	presenceAdapter := presence.New(presenceGRPCconn)
+	presenceAdapter := presence.New(":8086")
 
-	matchingSvc := matchingservice.New(cfg.MatchingSvc, matchingRepo, presenceAdapter)
+	matchingSvc := matchingservice.New(cfg.MatchingSvc, matchingRepo, presenceAdapter, redisAdapter)
 	//matchingSvc := matchingservice.New(cfg.MatchingSvc, matchingRepo, presenceSvc)
 
 	return authSrv, userSvc, uV, backofficeUserSvc, authorizationSvc, matchingSvc, matchingV, presenceSvc

@@ -2,7 +2,7 @@ package presence
 
 import (
 	"context"
-	"game-app/contract/golang/presence"
+	"game-app/contract/goproto/presence"
 	"game-app/param"
 	"game-app/pkg/protobufmapper"
 	"game-app/pkg/slice"
@@ -10,17 +10,30 @@ import (
 	"google.golang.org/grpc"
 )
 
+type Config struct{}
+
 type Client struct {
-	client presence.PresenceServiceClient
-	// conn   *grpc.ClientConn
+	address string
+	// config
 }
 
-func New(conn *grpc.ClientConn) Client {
-	return Client{client: presence.NewPresenceServiceClient(conn)}
+func New(address string) Client {
+	return Client{address: address}
 }
 
 func (c Client) GetPresence(ctx context.Context, req param.GetPresenceRequest) (param.GetPresenceResponse, error) {
-	resp, err := c.client.GetPresence(ctx,
+
+	// TODO: use richerror
+	// TODO: find the best practice for reliable communication
+	//! create new connection for every single method call
+	conn, err := grpc.Dial(c.address, grpc.WithInsecure())
+	if err != nil {
+		return param.GetPresenceResponse{}, err
+	}
+	defer conn.Close()
+
+	client := presence.NewPresenceServiceClient(conn)
+	resp, err := client.GetPresence(ctx,
 		&presence.GetPresenceRequest{
 			UserIds: slice.MapFromUintToUint64(req.UserID),
 		})

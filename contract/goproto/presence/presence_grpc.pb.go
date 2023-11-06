@@ -97,5 +97,5 @@ var PresenceService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contract/presence/presence.proto",
+	Metadata: "contract/protobuf/presence/presence.proto",
 }

@@ -2,6 +2,7 @@ package matchingservice
 
 import (
 	"context"
+	"game-app/contract/broker"
 	"game-app/entity"
 	"game-app/param"
 	"game-app/pkg/protobufencoder"
@@ -11,11 +12,8 @@ import (
 	"time"
 )
 
-type Publisher interface {
-	Publish(event entity.Event, payload string)
-}
-
 // TODO : add context to all repo and use case methods if necessary
+// ! dependency inversion
 type Repo interface {
 	AddToWaitList(userID uint, category entity.Category) error
 	GetWaitListByCategory(ctx context.Context, category entity.Category) ([]entity.WaitingMember, error)
@@ -34,10 +32,10 @@ type Service struct {
 	config         Config
 	repo           Repo
 	presenceClient PresenceClient
-	pub            Publisher
+	pub            broker.Publisher
 }
 
-func New(config Config, repo Repo, presenceClient PresenceClient, pub Publisher) Service {
+func New(config Config, repo Repo, presenceClient PresenceClient, pub broker.Publisher) Service {
 	return Service{config: config, repo: repo, presenceClient: presenceClient, pub: pub}
 }
 

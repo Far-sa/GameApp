@@ -16,11 +16,11 @@ export PATH=$PATH:$(go env GOPATH)/bin
 
 protoc --go_out=. \
        --go-grpc_out=. \
-       contract/presence/presence.proto
+       contract/protobuf/presence/presence.proto
 
 protoc --go_out=. \
        --go-grpc_out=. \
-       contract/matching/matching.proto
+       contract/protobuf/matching/matching.proto
 
 protoc --go_out=. --go_opt=paths=souce_relatives \
        --go-grpc_out=. --go-grpc_opt=paths=souce_relatives \
