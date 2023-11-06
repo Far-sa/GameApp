@@ -19,11 +19,36 @@ func EncodeMatchedUsersEvent(mu entity.MatchUsers) string {
 
 	payload, err := proto.Marshal(&pbMu)
 	if err != nil {
-		panic(err)
+		// TODO: log error
+		// TODO: update metrics
+		return ""
 	}
 
 	return base64.StdEncoding.EncodeToString(payload)
 
+}
+
+func DecodeMatchedUsersEvent(data string) entity.MatchUsers {
+
+	payload, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		// TODO: log error
+		// TODO: update metrics
+		return entity.MatchUsers{}
+	}
+
+	pbMu := matching.MatchUsers{}
+
+	if err := proto.Unmarshal(payload, &pbMu); err != nil {
+		// TODO: log error
+		// TODO: update metrics
+		return entity.MatchUsers{}
+	}
+
+	return entity.MatchUsers{
+		Category: entity.Category(pbMu.Category),
+		UserIDs:  slice.MapFromUint64ToUint(pbMu.UserIds),
+	}
 }
 
 // * general way for support all types of events (fat function)

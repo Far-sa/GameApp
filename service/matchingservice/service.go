@@ -126,7 +126,7 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 		}
 		// publish a new event for mu
 		go s.pub.Publish(entity.MatchingUserEvent,
-			protobufencoder.EncodeEvent(entity.MatchingUserEvent, mu))
+			protobufencoder.EncodeMatchedUsersEvent(mu))
 
 		// remove mu users from waiting list
 		matchedUsersToBeRemoved = append(matchedUsersToBeRemoved, mu.UserIDs...)
