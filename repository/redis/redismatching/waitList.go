@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/labstack/gommon/log"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -63,6 +64,26 @@ func (d DB) GetWaitListByCategory(ctx context.Context, category entity.Category)
 		})
 	}
 	return result, nil
+}
+
+func (d DB) RemoveUsersFromWaitingList(category entity.Category, userIDs []uint) {
+	// TODO: add to config
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	members := make([]any, 0)
+	for _, u := range userIDs {
+		members = append(members, strconv.Itoa(int(u)))
+	}
+
+	numberOfRemovedMemberes, err := d.adapter.Client().ZRem(ctx, getCategoryKey(category), members...).Result()
+	if err != nil {
+		log.Errorf("remove users from waiting list : %v\n", err)
+		// TODO: update metrics
+	}
+
+	log.Printf("%d items removed from %s", numberOfRemovedMemberes, getCategoryKey(category))
+
 }
 
 func getCategoryKey(category entity.Category) string {

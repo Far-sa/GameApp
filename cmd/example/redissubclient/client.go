@@ -33,7 +33,7 @@ func main() {
 		case topic:
 			processUsersMatchedEvent(msg.Channel, msg.Payload)
 		default:
-			fmt.Println("invaid topic")
+			fmt.Println("invaid topicg")
 		}
 	}
 }

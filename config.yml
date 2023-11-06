@@ -14,8 +14,8 @@ mysql:
   db_name: gamedb
 
 redis:
-  port: 6379
   host: localhost
+  port: 6379
   db: 0
   password: ""
 
