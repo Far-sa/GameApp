@@ -4,6 +4,7 @@ import (
 	"context"
 	"game-app/entity"
 	"game-app/param"
+	"game-app/pkg/protobufencoder"
 	"game-app/pkg/richerror"
 	"game-app/pkg/timestamp"
 	"sync"
@@ -124,12 +125,13 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 			UserIDs:  []uint{finalList[i].UserID, finalList[i+1].UserID},
 		}
 		// publish a new event for mu
-		go s.pub.Publish(entity.MatchingUserEvent,payload string)
+		go s.pub.Publish(entity.MatchingUserEvent,
+			protobufencoder.EncodeEvent(entity.MatchingUserEvent, mu))
 
 		// remove mu users from waiting list
 		matchedUsersToBeRemoved = append(matchedUsersToBeRemoved, mu.UserIDs...)
 	}
-	
+
 	go s.repo.RemoveUsersFromWaitingList(category, matchedUsersToBeRemoved)
 }
 
