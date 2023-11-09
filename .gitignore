@@ -27,6 +27,8 @@ go.work
 
 data
 config.ymlV
+logs
 
 ./data
 ./config.ymlV
+./logs

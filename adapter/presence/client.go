@@ -33,6 +33,7 @@ func (c Client) GetPresence(ctx context.Context, req param.GetPresenceRequest) (
 	defer conn.Close()
 
 	client := presence.NewPresenceServiceClient(conn)
+
 	resp, err := client.GetPresence(ctx,
 		&presence.GetPresenceRequest{
 			UserIds: slice.MapFromUintToUint64(req.UserID),

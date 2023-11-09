@@ -7,6 +7,7 @@ import (
 	"game-app/adapter/redis"
 	"game-app/config"
 	"game-app/delivery/httpserver"
+	"game-app/logger"
 	"game-app/repository/mysql"
 	"game-app/repository/mysql/accessctl"
 	"game-app/repository/mysql/mysqluser"
@@ -25,6 +26,8 @@ import (
 	"os/signal"
 	"sync"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -36,11 +39,8 @@ func main() {
 	// mgr := migrator.New(cfg.Mysql)
 	// mgr.Up()
 
-	// presenceGRPCconn, err := grpc.Dial(":8086", grpc.WithInsecure())
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer presenceGRPCconn.Close()
+	//logger.Logger.Info("migration up", zap.Any("config", cfg))
+	logger.Logger.Named("main").Info("migration applied", zap.Any("config", cfg))
 
 	// TODO : add struct
 	authSrv, userSrv, userValidator, backofficeUserSvc, authorizationSvc,
