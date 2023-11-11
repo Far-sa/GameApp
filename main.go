@@ -27,10 +27,19 @@ import (
 	"sync"
 	"time"
 
+	"net/http"
+	_ "net/http/pprof"
+
 	"go.uber.org/zap"
 )
 
 func main() {
+
+	//* add profiling
+	go func() {
+		http.ListenAndServe(":8099", nil)
+	}()
+
 	// TODO read config path from cmd
 	cfg := config.Load("config.yml")
 	fmt.Printf("cfg : %+v\n", cfg)

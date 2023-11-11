@@ -26,3 +26,8 @@ protoc --go_out=. --go_opt=paths=souce_relatives \
        --go-grpc_out=. --go-grpc_opt=paths=souce_relatives \
        port/presence/presence.proto
 
+
+
+pprof commands:
+       curl <uri> --output filename.tar.gz
+       go tool pprof -http=<> ./filename
