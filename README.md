@@ -10,12 +10,14 @@ Redis Adapter: Leverages Redis as a high-performance data store for caching and 
 Golang: Built with Golang, the project benefits from its efficiency and concurrency features, making it suitable for game development.
 
 Benefits:
+
 Scalability: Services can be scaled independently to handle increased player traffic or game complexity.
 Maintainability: Modular design keeps the codebase organized and promotes easier maintenance.
 Testability: Clean Architecture facilitates writing unit and integration tests effectively.
 Performance: Redis integration enhances performance through efficient data storage and retrieval.
 
 Target Audience:
+
 Golang developers interested in building service-oriented games.
 Developers familiar with Clean Architecture principles.
 Those seeking to leverage Redis for game data management.
